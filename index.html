@@ -1,0 +1,759 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<style>
+	
+	h2 {
+		text-align: left;
+    }
+ 	
+	.axis path,
+	.axis line{
+		fill: none;
+		stroke: black;
+	}
+	
+	.title-story {
+		font-family: times, Times New Roman, times-roman, georgia, serif;
+		color: #444;
+		margin: 0;
+		padding: 0px 0px 6px 0px;
+		font-size: 41px;
+		line-height: 44px;
+		letter-spacing: -2px;
+		font-weight: bold;
+	}
+	.title-sub {
+		font-family: times, Times New Roman, times-roman, georgia, serif;
+		color: #444;
+		margin: 0;
+		padding: 0px 0px 6px 0px;
+		font-size: 31px;
+		line-height: 44px;
+		letter-spacing: -2px;
+		font-weight: bold;
+	}
+	.para-main {
+		font-family: "Helvetica Neue", "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+        font-size: 14px;
+        margin-top: .5em; color: #666;
+ 
+	}
+
+	.line{
+		fill: none;
+		stroke: blue;
+		stroke-width: 2px;
+	}
+
+	.tick text{
+		font-size: 12px;
+	}
+
+	.tick line{
+		opacity: 0.2;
+	}
+	
+	.x.label {
+		font-family:sans-serif;
+		font-size: 11px;
+	}
+
+	.y.label {
+		font-family:sans-serif;
+		font-size: 11px;
+	}
+	
+	.right-menu-buttons-text {
+			font-family:sans-serif;
+			font-size:12px;
+	}
+	
+	.right-menu-selectAll-text {
+			font-family:sans-serif;
+			font-size:10px;
+	}
+
+			
+
+
+	
+    </style>
+
+	</head>
+	<body>
+	<h1 class="title-story">Study on Effectiveness of Pre-Election Voter Awareness Campaign (PEVAC) 
+	</h1>
+	<p class="para-main">
+	The Election Commission of India is responsible for the superintendence, direction and control of the entire process for conduct of elections to Parliament and Legislature of every State and to the offices of President and Vice-President of India. 
+	It came into existence on 25th January 1950. 
+	The commission's prime responsibility is to conduct free and fair elections and to provide such an atmosphere in which every eligible voter can cast his or her vote.</p>
+	<img src="vote-campaign.jpg" alt="My vote My Right" style="width:584px;height:228px;">
+	<p class="para-main">
+Recently, Multimedia campaigns were launched with the help of National Service Scheme and Nehru Yuva Kendra volunteers. The Field Publicity Directorate of Information and Broadcasting Ministry also launched intensive campaign targeting women and youth voters to come forward to exercise their voting right.
+This year, the Election Commission had given special emphasis on inclusion of women and young voters. This proved very fruitful as number of these two sections of voters has increased considerably.
+	</p>
+	<div class="svg-container"> 
+	<h1 class="title-sub">Comparing Voter Turnout between Indian General Elections 2009 and 2014
+	</h1>
+	</div>
+			<script>
+	function create(data){
+	//To Create Cumulative voter turnout bar chart
+		var width= 300;
+		var height= 340;
+		var scales= d3.scaleLinear()
+			.domain([100, 0])
+			.range([0,width]);
+		var scalesBottom= d3.scaleLinear()
+			.domain([2014, 2015])
+			.range([0,120]);
+		var axis = d3.axisLeft(scales)
+			.ticks("5");
+						
+		var axisBottom = d3.axisBottom(scalesBottom)
+			.ticks("2")
+			.tickFormat("");
+		var color= d3.scaleLinear()
+			.domain([100,0])
+			.range(["red","green"]);
+		var title= d3.select("body")
+			.append("h1")
+			.attr("class","title-sub")
+			.text("Cumulative Voter Turnout(%)");
+		var canvas = d3.select("body")
+			.append("svg")
+			.attr("width",width)
+			.attr("height",height)
+			.append("g")
+			.attr("transform","translate(20,0)");
+		var scaleValue = canvas.append("g")
+			.attr("transform","translate(10,10)")
+			.call(axis);	
+        var scaleValueB = canvas.append("g")
+			.attr("transform","translate(10,310)")
+			.call(axisBottom);		
+		var xVal= canvas.append("text")
+			.attr("class", "x label")
+			.attr("text-anchor", "end")
+			.attr("x", 55)
+			.attr("y", height - 15)
+			.text("2009");
+		var xVal2= canvas.append("text")
+			.attr("class", "x label")
+			.attr("text-anchor", "end")
+			.attr("x", 115)
+			.attr("y", height - 15)
+			.text("2014");			
+		var dataArray= [d3.mean(data, function(d) {return d["Turnout14"]; }),d3.mean(data, function(d) {return d["Turnout09"]; })];
+		var bars = canvas.selectAll("rect")
+			.data(dataArray)
+			.enter()
+				.append("rect")
+				.attr("width",50)	
+				.attr("height",function(d){return width-scales(d);})
+				.attr("fill","gray")
+				.attr("x",function(d,i){ return i*60;})
+				.attr("transform","translate(130,310) rotate(180,0,0)");
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////// this is the setup code
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+        "use strict"; 
+		// setup variables
+		
+		
+		var transition_in_progress=0;
+				// set >1 when important transition starts
+				// update to 0 when important transition ends
+		
+        var margin = 75, //left and right margin
+			tmargin=1.4*margin, //top
+			bmargin=0.7*margin, //bottom
+			width = 1200, //svg width
+			height = 1200; //svg height
+
+        var radius = 4; //circle radius
+		  
+		  // The frame duration for the animation in milliseconds
+        var frame = 2000;
+		var set_delay = 0;
+		
+		  
+		//colors
+		var fillColor0="#80B1D3",
+			strokeColor0="#5093C3",
+			fillColor1="#FB8072",
+			strokeColor1="#F94C39",
+			fillColor2="#FFF2F0",
+			strokeColor2="#757575";
+			
+		var selectedColor="#FDB462" //color when button is selected
+			  
+		
+		// Create svg
+        var svg = d3.select(".svg-container")
+			.append("svg")
+            .attr("width", width)
+            .attr("height", height);
+			
+		// main container rectangle
+		svg.append('rect')
+			.attr("width", width)
+            .attr("height", height)
+			.style("opacity", 0.3)
+			.style("fill", "none")
+			.style("stroke","black")
+			;
+		
+		// the chart consist of several parts defined below
+        var rightMenu=svg.append('g')
+              .attr('class','right-menu');
+		var rightMenuBottom=svg.append('g')
+              .attr('class','right-menu-bottom');
+		var rightMenuHead=svg.append('g')
+              .attr('class','right-menu-head');
+		var rightMenuTitle=svg.append('g')
+              .attr('class','right-menu-title');
+		var rightMenuBottomTitle=svg.append('g')
+              .attr('class','right-menu-bottom-title');
+		var selector_box = svg.append('g')
+              .attr('class','selector');
+		var legend_box = svg.append('g')
+              .attr('class','legend');
+		var mainChart=svg.append('g')
+              .attr('class','main-chart');
+			  
+	////////// end of setup code
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////// code to create scales and axes
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		  
+		// Create x-axis scale 
+        var x_scale = d3.scaleLinear()
+            .range([margin, width-5*margin])
+            .domain([0,100]);
+
+        // Create y-axis scale (if actual results are shown)
+        var y_scale_res = d3.scaleLinear()
+            .range([height-bmargin, tmargin])
+            .domain([0,100]);
+		
+		// Create y-axis scale (if differences are shown)
+		var y_scale_diff = d3.scaleLinear()
+            .range([height-bmargin, tmargin])
+            .domain([-3,2]);
+
+		// Create axes
+        var x_axis = d3.axisBottom()
+            .scale(x_scale)
+			.tickSizeInner(-height+tmargin+bmargin)
+			.tickSizeOuter(3);
+        var y_axis_diff = d3.axisLeft()
+            .scale(y_scale_diff)
+			.tickSizeInner(-width+6*margin)
+			.tickSizeOuter(3);
+		var y_axis_res = d3.axisLeft()
+            .scale(y_scale_res)
+			.tickSizeInner(-width+6*margin)
+			.tickSizeOuter(3);
+		
+		// this is dict with axis labels
+		var axis_labels_data= {"x_res":"Voter Turnout by constituency in Indian General Elections 2014 (%)",
+						"y_res":"Voter Turnout by constituency in Indian General Elections 2009 (%)",
+						"x_diff":"Share of votes in 2015 predicted by regression (%)",
+						"y_diff":"Difference from the regression line (p.p.)"}
+
+		// create graphics object for x axis
+        var  x_axis_d3  =  mainChart.append("g")
+            .attr("class", "x axis")
+			.attr("transform", "translate(0," + (height-bmargin) + ")")
+			.call(x_axis);
+		//create label for the x axis
+		var xlabel= mainChart.append("text")
+			.attr("class", "x label")
+			.attr("text-anchor", "end")
+			.attr("x", width-5*margin)
+			.attr("y", height - 25)
+			.text(axis_labels_data.x_res);
+
+		// create graphics object for y axis
+		var y_axis_d3 = mainChart.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + margin + ",0)")
+            .call(y_axis_res);   
+		//create label for the y axis
+		var ylabel= mainChart.append("text")
+			.attr("class", "y label")
+			.attr("text-anchor", "end")
+			.attr("x", -tmargin)
+			.attr("y", margin-25)
+			.attr("transform", "rotate(-90)")
+			.text(axis_labels_data.y_res);
+		
+	////////// end of code to create scales and axes
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			// create circle for each data node
+		d3.select(".main-chart")
+            .selectAll("circle")
+            .data(data)
+			.enter()
+            .append("circle");
+			
+		// place circles according to the data
+		d3.select(".main-chart").selectAll("circle")
+            .attr("cx", function(d) {
+                return x_scale(d["Turnout09"]);
+            })
+            .attr("cy", function(d) {
+                return y_scale_res(d["Turnout14"]);
+            })
+			.attr("r", radius)
+			// attach clases 'circle-datum' and 'circle-[State_name]' to the circles
+			.attr("class", function(d) {return (("circle-datum circle-" + d["State"]).toLowerCase()) })
+            .attr("fill", function(d) {return ((d["Type"] === "SC" || d["Type"] === "ST") ? fillColor0 : fillColor2)})
+			.attr("opacity", 0.7)
+			.attr("stroke", function(d) {return (d["TurnoutDiff"] > 5 ? "green" : (d["TurnoutDiff"] < -5 ? "red" : strokeColor2))})
+			.attr("stroke-width", "1px")
+			.on("mouseover", function(){d3.select(this).attr("fill", "yellow");})
+			.on("mouseout", function(){d3.select(this).attr("fill", 
+								function(d) {return ( (d["Type"] === "SC" || d["Type"] === "ST")? fillColor0 : fillColor2)}
+							);
+				})
+            .append("title")
+            .text(function(d) {return 'Constituency No: ' + d.No + '\nConstituency Name: ' + d["PC Name"] +'\nState: '+d.State 
+										+ '\nTurnout % in 2009: ' + d['Turnout09'] +'\nTurnout % in 2014: '+d['Turnout14'] +"\nWinning Party(2014): " +d.Party  +"\nTotal Voters: " +d.Electors
+									;});
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////// the code to create legend and boundary lines 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+		// this code appends green and red lines to the chart
+		// which are the boundaries of good and bad turnout
+		var bound_lines_data = [{"x1_res":x_scale(5), "x2_res": x_scale(100),"y1_res": y_scale_res(0),"y2_res": y_scale_res(95),
+					"x1_diff": x_scale(9),"x2_diff": x_scale(0),"y1_diff": y_scale_diff(-0.5),"y2_diff": y_scale_diff(-0.5),
+					"stroke": "red","stroke-dasharray": "3","opacity":0.7},
+								{"x1_res":x_scale(0), "x2_res": x_scale(95),"y1_res": y_scale_res(5),"y2_res": y_scale_res(100),
+					"x1_diff": x_scale(9),"x2_diff": x_scale(0),"y1_diff": y_scale_diff(0.5),"y2_diff": y_scale_diff(0.5),
+					"stroke": "green","stroke-dasharray": "3","opacity":0.7}];
+		mainChart.selectAll(".color-lines")
+				.data(bound_lines_data)
+				.enter()
+				.append("line")
+				.attr("class","color-lines");
+		mainChart.selectAll(".color-lines")
+				.attr("x1", function(d) {return (d["x1_res"]);})
+				.attr("x2", function(d) {return (d["x2_res"]);})
+				.attr("y1", function(d) {return (d["y1_res"]);})
+				.attr("y2", function(d) {return (d["y2_res"]);})
+				.attr("stroke", function(d) {return (d["stroke"]);})
+				.attr("stroke-dasharray", function(d) {return (d["stroke-dasharray"]);})
+				.attr("opacity", function(d) {return (d["opacity"]);});
+
+		// data about placement, style and text of legend circles
+		var legend_data =[ { "x": margin+215, "y": 65, "color":fillColor0, "stroke":strokeColor2, "stroke-dasharray":"2,2", "title":"SC/ST Constituency", "title-color":"black"},
+					{ "x": margin+215, "y": 85, "color":fillColor2, "stroke":strokeColor2, "stroke-dasharray":"2,2", "title":"General Constituency", "title-color":"black"},
+					{ "x": margin+215+250, "y": 65, "color":"none", "stroke":"green", "stroke-dasharray":"none", "title":"Good Turnout" , "title-color":"green"},
+					{ "x": margin+215+250, "y": 85, "color":"none", "stroke":"red", "stroke-dasharray":"none", "title":"Poor Turnout", "title-color":"red"}];
+
+		// create cirles and text in the legend_box (so they are not in the .main-chart)
+		// and bound them to legend_data
+		legend_box.selectAll("circle")
+            .data(legend_data)
+			.enter()
+            .append("circle");
+		legend_box.selectAll("text")
+            .data(legend_data)
+			.enter()
+            .append("text");
+		
+		// assign attributes to circles
+		legend_box.selectAll("circle")
+			.attr("cx", function(d) {
+                return (d["x"]);
+            })
+            .attr("cy", function(d) {
+                return (d["y"]);
+            })
+            .attr("r", radius)
+			.attr("fill", function(d) {return (d["color"])})
+			.attr("stroke", function(d) {return (d["stroke"])})
+			.attr("stroke-dasharray", function(d) {return (d["stroke-dasharray"])})
+			.attr("opacity", 0.7)
+		
+		// assign attributes to text
+		legend_box.selectAll("text")
+			.attr("x", function(d) {
+                return (d["x"]+10);
+            })
+			.attr("y", function(d) {
+                return (d["y"]+4);
+            })
+			.text(function(d) {return (d["title"]);})
+			.style("font-family", "sans-serif")
+			.style("font-size", "11px")
+			.attr("fill", function(d) {return (d["title-color"]);});	
+	////////// end of code to create legend and boundary lines
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////// the code to create right menu
+	////////// allows to show/hide constituencies from particular States
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+        // Create the selection tabs for the districts in the right side of the page
+        // This was inspired by the example from
+        // http://dimplejs.org/advanced_examples_viewer.html?id=advanced_storyboard_control
+
+          
+		// nest the data by State
+		///http://bl.ocks.org/phoebebright/raw/3176159/
+		var nested_data = d3.nest()
+				.key(function(d) { if(d.UnionTerritory == "No") {return d.State; }} )
+				.rollup(function(leaves) { return { "n_constituencies": leaves.length, "total_votes14": d3.sum(leaves, function(d) { return (d.Electors); })} })
+				.entries(data);
+		
+		// created a new dict with State_name, total votes in 14. 'Status'=1 if the data is shown on chart, 0 otherwise.
+		var State_data = []
+		var max_votes = 0; //maximum number of votes
+		for (var i = 0; i < nested_data.length; i++) { 
+			var entry={};
+			entry['State'] = "" + nested_data[i].key;
+			entry['total_votes14'] = nested_data[i].value['total_votes14'];
+			entry['status']=1;
+			
+			max_votes = Math.max(max_votes,entry['total_votes14']);
+			if(entry['State'] != "undefined"){
+			State_data.push(entry);
+			}
+			
+		}
+		
+		var nested_data2 = d3.nest()
+				.key(function(d) { if(d.UnionTerritory == "Yes") {return d.State; }} )
+				.rollup(function(leaves) { return { "n_constituencies": leaves.length, "total_votes14": d3.sum(leaves, function(d) { return (d.Electors); })} })
+				.entries(data);
+		
+		// created a new dict with State_name, total votes in 14. 'Status'=1 if the data is shown on chart, 0 otherwise.
+		var Union_data = []
+		var max_votes_u = 0; //maximum number of votes
+		for (var i = 0; i < nested_data2.length; i++) { 
+		if(nested_data2[i].key != "undefined"){
+			var entry={};
+			entry['State'] = "" + nested_data2[i].key;
+			entry['total_votes14'] = nested_data2[i].value['total_votes14'];
+			entry['status']=1;
+			
+			max_votes_u = Math.max(max_votes_u,entry['total_votes14']);
+			Union_data.push(entry);
+		}
+			
+		}
+
+		
+		// Now we have State name, number of votes stored in State_data
+		// Also maximum number of votes for the State
+	
+		// sort the dict  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+		State_data.sort(function (a, b) {
+			if (a.total_votes14 > b.total_votes14) {
+				return -1;
+			}
+			if (a.total_votes14 < b.total_votes14) {
+				return +1;
+			}
+			return 0;
+		});
+		
+		Union_data.sort(function (a, b) {
+			if (a.total_votes14 > b.total_votes14) {
+				return -1;
+			}
+			if (a.total_votes14 < b.total_votes14) {
+				return +1;
+			}
+			return 0;
+		});
+		
+		// Place the indicator bar chart to the right
+        var indicator_x0=width-4.5*margin,
+            indicator_y0=tmargin,
+            indicator_width=4*margin;
+		
+		// create a new scale to size the bars accoring to the number of votes from the State
+		var horizontal_scale = d3.scaleLinear()
+            .range([0, indicator_width])
+            .domain([0,max_votes]);
+		var horizontal_scale_u = d3.scaleLinear()
+            .range([0, indicator_width])
+            .domain([0,max_votes_u]);
+		
+		
+		// This code adds the title to the right menu 
+        rightMenuTitle.selectAll("title_text")
+            .data(["Click bars below to highlight",
+					"or hide constituencies",
+					"from the selected districts"])
+            .enter()
+            .append("text")
+            .attr("x", indicator_x0)
+            .attr("y", function (d, i) { return 40 + i * 15; })
+            .style("font-family", "sans-serif")
+            .style("font-size", "12px")
+            .style("color", "Black")
+            .text(function (d) { return d; });
+			
+		rightMenuBottomTitle.selectAll("title_text")
+            .data(["Union Territories"])
+            .enter()
+            .append("text")
+            .attr("x", indicator_x0)
+            .attr("y", function (d, i) { return 940 + i * 15; })
+            .style("font-family", "sans-serif")
+            .style("font-size", "20px")
+            .style("color", "Black")
+            .text(function (d) { return d; });
+	    //////////////////////////////
+		//// This block of code creates two buttons in the right menu: "Select All" and "Deselect All"
+		//// They allow to show/hide circles for all States
+		
+		// dataset with buttons coordinates and text
+		var selectAll_buttons_data =[ { "x": indicator_x0, "y": tmargin-25, "txt":"Select All"},
+					{ "x": indicator_x0+1.0*margin, "y": tmargin-25, "txt":"Deselect All"}];
+
+		// create rectangles
+		rightMenuHead.selectAll("rect")
+            .data(selectAll_buttons_data)
+			.enter()
+            .append("rect");
+		
+		// customize attributes 
+		rightMenuHead.selectAll("rect")
+			.attr("x", function(d) {
+                return (d["x"]);
+            })
+            .attr("y", function(d) {
+                return (d["y"]);
+            })
+			.attr('width', 0.9*margin)
+                .attr('height', 15)
+            .attr('fill', "#C7DDFF")
+			.attr('stroke', "#94BFFF")
+			.attr('rx', 5)
+			.attr('ry', 5)
+			.on("mouseover", function(){d3.select(this).attr("opacity","0.5");})
+			.on("mouseout", function(){d3.select(this).attr("opacity","1.0");})
+			.on("click", function(d,i){ 
+						// if transition is not over, set a delay
+						(!(transition_in_progress===0) ? set_delay=100+frame/2 : set_delay=0);
+						if (i===0) { // if 'Select All'
+							rightMenu.selectAll('rect').transition().duration(300).attr("fill",selectedColor)
+							for (var i = 0; i < State_data.length; i++) { 
+								State_data[i].status=1
+								}
+							rightMenuBottom.selectAll('rect').transition().duration(300).attr("fill",selectedColor)
+							for (var i = 0; i < Union_data.length; i++) { 
+								Union_data[i].status=1
+								}
+							// make all circles visible
+							mainChart.selectAll(".circle-datum")
+									.transition().duration(300).delay(set_delay).attr("opacity","1.0")	
+							};
+						if (i===1) { //if 'Deselect All'
+							rightMenu.selectAll('rect').transition().duration(300).attr("fill","white")
+							for (var i = 0; i < State_data.length; i++) { 
+								State_data[i].status=0
+								}
+							rightMenuBottom.selectAll('rect').transition().duration(300).attr("fill","white")
+							for (var i = 0; i < Union_data.length; i++) { 
+								Union_data[i].status=0
+								}
+							// make all circles invisible
+							mainChart.selectAll(".circle-datum")
+									.transition().duration(300).delay(set_delay).attr("opacity","0.0")	
+							};
+						
+					});
+		
+		// create text
+		rightMenuHead.selectAll("text_buttons")
+            .data(selectAll_buttons_data)
+			.enter()
+            .append("text")
+			.attr("class","right-menu-selectAll-text");
+		
+		rightMenuHead.selectAll("text")
+				.text(function(d) {
+								return (d["txt"]);})
+                .attr('x', function(d) {
+								return (d["x"]+10);})
+                .attr('y', function(d) {
+								return (d["y"]+10);})
+                .attr('fill', 'black')
+				.style( "pointer-events", "none"); // disallow events on text so that only rectangle reacts to the pointer
+
+		////////////////////
+		
+		//////////////////////////////
+		//// This block of code creates buttons for the States
+		//// The length of the buttons is proportional to the number of voters in the State
+		//// The buttons allow to show/hide the corresponding points
+		
+		rightMenu.selectAll("rect")
+            .data(State_data)
+			.enter()
+            .append("rect");
+	
+		rightMenu.selectAll("rect")
+				.attr('width', function(d) {return (horizontal_scale(d["total_votes14"])); })
+                .attr('height', 25)
+                .attr('x', indicator_x0)
+				.attr('y', function(d,i) {return (indicator_y0+28*i); })
+                .attr('fill', selectedColor)
+                .attr('stroke', 'gray')
+				.attr('rx', 10)
+				.attr('ry', 10)
+				.on("mouseover",  function(d,i){ 
+							
+							//make the button opaque
+							d3.select(this).attr("fill",selectedColor).attr("opacity","0.5");
+							// if transition in progress, add a delay
+							(!(transition_in_progress===0) ? set_delay=100+frame/2 : set_delay=0);
+							//highlight the circles for the district
+							mainChart.selectAll(".circle-"+State_data[i].State.toLowerCase())
+								.transition().duration(50).delay(set_delay).attr("stroke-width","2px")
+								.attr("opacity",1)
+				})
+				.on("mouseout", function(d,i){ 
+							//reverse the changes made by mouseover event
+							d3.select(this).attr("fill",
+								(State_data[i].status === 1 ? selectedColor : "white")
+								)
+								.attr("opacity","1.0");
+							(!(transition_in_progress===0) ? set_delay=100+frame/2 : set_delay=0);
+							mainChart.selectAll(".circle-"+State_data[i].State.toLowerCase())
+								.transition().duration(50).delay(set_delay).attr("stroke-width","1px")
+								.attr("opacity",0.7*State_data[i].status)
+				})
+				.on("click", function(d,i){ 
+							(!(transition_in_progress===0) ? set_delay=100+frame/2 : set_delay=0)
+							State_data[i].status=((State_data[i].status+1) %2);
+							//console.log("set to "+ State_data[i].status);
+							d3.select(this).attr("fill",
+									(State_data[i].status === 1 ? selectedColor : "white")
+									).attr("opacity","1.0")
+								
+							mainChart.selectAll(".circle-"+State_data[i].State.toLowerCase())
+								.transition().duration(150).delay(set_delay).attr("opacity",0.5)
+								.transition().duration(100).attr("opacity",State_data[i].status)
+						})
+				.append("title")
+				.text(function(d) {return  d.total_votes14 +' Turnout in Indian General Elections 2014';})
+				;
+			
+		// put text with States names over buttons
+		rightMenu.selectAll("text_buttons")
+            .data(State_data)
+			.enter()
+            .append("text")
+			.attr("class","right-menu-buttons-text");
+			
+		rightMenu.selectAll("text")
+			.text(function(d) {
+						return (d["State"]);})
+            .attr('x', indicator_x0+10)
+            .attr('y', function(d,i) {return (16+indicator_y0+28*i); })
+            .attr('fill', 'black')
+			//turn off pointer events
+			.style( "pointer-events", "none");
+			
+	    rightMenuBottom.selectAll("rect")
+            .data(Union_data)
+			.enter()
+            .append("rect");
+	
+		rightMenuBottom.selectAll("rect")
+				.attr('width', function(d) {return (horizontal_scale_u(d["total_votes14"])); })
+                .attr('height', 25)
+                .attr('x', indicator_x0)
+				.attr('y', function(d,i) {return ((indicator_y0+850)+28*i); })
+                .attr('fill', selectedColor)
+                .attr('stroke', 'gray')
+				.attr('rx', 10)
+				.attr('ry', 10)
+				.on("mouseover",  function(d,i){ 
+							
+							//make the button opaque
+							d3.select(this).attr("fill",selectedColor).attr("opacity","0.5");
+							// if transition in progress, add a delay
+							(!(transition_in_progress===0) ? set_delay=100+frame/2 : set_delay=0);
+							//highlight the circles for the district
+							mainChart.selectAll(".circle-"+Union_data[i].State.toLowerCase())
+								.transition().duration(50).delay(set_delay).attr("stroke-width","2px")
+								.attr("opacity",1)
+				})
+				.on("mouseout", function(d,i){ 
+							//reverse the changes made by mouseover event
+							d3.select(this).attr("fill",
+								(Union_data[i].status === 1 ? selectedColor : "white")
+								)
+								.attr("opacity","1.0");
+							(!(transition_in_progress===0) ? set_delay=100+frame/2 : set_delay=0);
+							mainChart.selectAll(".circle-"+Union_data[i].State.toLowerCase())
+								.transition().duration(50).delay(set_delay).attr("stroke-width","1px")
+								.attr("opacity",0.7*Union_data[i].status)
+				})
+				.on("click", function(d,i){ 
+							(!(transition_in_progress===0) ? set_delay=100+frame/2 : set_delay=0)
+							Union_data[i].status=((Union_data[i].status+1) %2);
+							//console.log("set to "+ State_data[i].status);
+							d3.select(this).attr("fill",
+									(Union_data[i].status === 1 ? selectedColor : "white")
+									).attr("opacity","1.0")
+								
+							mainChart.selectAll(".circle-"+Union_data[i].State.toLowerCase())
+								.transition().duration(150).delay(set_delay).attr("opacity",0.5)
+								.transition().duration(100).attr("opacity",Union_data[i].status)
+						})
+				.append("title")
+				.text(function(d) {return  d.total_votes14 +' Turnout in Indian General Elections 2014';})
+				;
+			
+		// put text with district names over buttons
+		rightMenuBottom.selectAll("text_buttons")
+            .data(Union_data)
+			.enter()
+            .append("text")
+			.attr("class","right-menu-buttons-text");
+			
+		rightMenuBottom.selectAll("text")
+			.text(function(d) {
+						return (d["State"]);})
+            .attr('x', indicator_x0+10)
+            .attr('y', function(d,i) {return (16+(indicator_y0+850)+28*i); })
+            .attr('fill', 'black')
+			//turn off pointer events
+			.style( "pointer-events", "none");
+			
+
+	////////// end of code to create right menu
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			}
+		</script>
+		<script type="text/javascript">
+  /*
+    Use D3 to load the CSV file
+    and pass the contents of it to the draw function
+    */
+  d3.csv("IndiaVotes_PC-_All_States_2014.csv", create);
+        </script>
+
+	</body>
+</html>
